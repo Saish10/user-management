@@ -1,7 +1,10 @@
 """Configuration settings for the application."""
 
+
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -16,5 +19,7 @@ class Settings:
     MAIL_SERVER: str = os.getenv("MAIL_SERVER")
 
 
-
 settings = Settings()
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent

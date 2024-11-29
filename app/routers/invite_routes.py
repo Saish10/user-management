@@ -1,6 +1,8 @@
 """Routes for sending invitation emails."""
 
+import os
 from fastapi import Request
+from app.config.settings import BASE_DIR
 from app.routers.api_router import router
 from app.services.email_service import send_invitation_email
 from app.constants import RECIPIENTS, GITHUB_LINK
@@ -45,7 +47,10 @@ async def send_invite(request: Request) -> dict[str, str]:
         "github_link": GITHUB_LINK,  # Add the GitHub link to the context
     }
     recipients: list[str] = RECIPIENTS
+    attachments = [os.path.join(BASE_DIR, "firestore_ss.png")]
 
     # Send the email
-    await send_invitation_email(recipients, template_name, context)
+    await send_invitation_email(
+        recipients, template_name, context, attachments
+    )
     return {"detail": "Invitation email sent successfully"}

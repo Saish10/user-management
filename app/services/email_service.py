@@ -1,6 +1,6 @@
 import os
 
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from jinja2 import Template
 
 from app.config.settings import settings
@@ -19,15 +19,19 @@ conf = ConnectionConfig(
 
 
 async def send_invitation_email(
-    recipients: list, template_name: str, context: dict
+    recipients: list,
+    template_name: str,
+    context: dict,
+    attachments: list = None,
 ):
     """
-    Send an email using a template loaded from the templates folder.
+    Send an email with attachments using a template loaded from the templates folder.
 
     Args:
         recipients (list): List of recipient email addresses.
         template_name (str): Name of the template file.
         context (dict): Context variables to render the template.
+        attachments (list): List of file paths to attach to the email.
     """
     # Construct the full path to the template
     template_path = os.path.join("app", "templates", template_name)
@@ -44,12 +48,15 @@ async def send_invitation_email(
     # Render the template with the provided context
     body = template.render(context)
 
-    # Prepare and send the email
+    # Prepare the email message
     message = MessageSchema(
         subject="API Documentation and Firestore Details",
         recipients=recipients,
         body=body,
-        subtype="html",
+        subtype=MessageType.html,
+        attachments=attachments if attachments else [],  # Attachments, if any
     )
+
+    # Send the email
     fm = FastMail(conf)
     await fm.send_message(message)
