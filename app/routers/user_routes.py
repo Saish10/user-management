@@ -4,8 +4,6 @@ from typing import Any
 from fastapi import HTTPException
 from app.db.firestore import db
 from app.schemas.user_schema import User
-
-
 from app.routers.api_router import router
 
 

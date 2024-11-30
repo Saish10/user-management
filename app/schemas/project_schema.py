@@ -1,6 +1,5 @@
 """Module for project schemas."""
 
-from typing import List
 from pydantic import BaseModel
 
 
@@ -17,7 +16,7 @@ class ProjectDetails(BaseModel):
 
     start_date: str
     end_date: str
-    team_members: List[TeamMember] = []
+    team_members: TeamMember
 
 
 class Project(BaseModel):
