@@ -10,3 +10,5 @@ app = FastAPI(
 
 app.include_router(user_routes.router, prefix="/api")
 app.include_router(invite_routes.router, prefix="/api")
+
+

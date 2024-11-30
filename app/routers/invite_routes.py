@@ -4,8 +4,9 @@ import os
 from fastapi import Request
 from app.config.settings import BASE_DIR
 from app.routers.api_router import router
+from app.schemas.user_schema import InviteRequest
 from app.services.email_service import send_invitation_email
-from app.constants import RECIPIENTS, GITHUB_LINK
+from app.constants import GITHUB_LINK
 
 
 def generate_docs_links(request: Request) -> dict:
@@ -26,13 +27,14 @@ def generate_docs_links(request: Request) -> dict:
     }
 
 
+
 @router.post("/send_invite")
-async def send_invite(request: Request) -> dict[str, str]:
+async def send_invite(request: Request, invite_request: InviteRequest) -> dict[str, str]:
     """
     Send the invitation email with dynamic API documentation links.
 
     Args:
-        request (Request): The FastAPI request object.
+        request (InviteRequest): Request body containing recipients.
 
     Returns:
         dict: A success message indicating the email was sent.
@@ -46,11 +48,12 @@ async def send_invite(request: Request) -> dict[str, str]:
         **docs_links,
         "github_link": GITHUB_LINK,  # Add the GitHub link to the context
     }
-    recipients: list[str] = RECIPIENTS
+
+    # Attachments (optional)
     attachments = [os.path.join(BASE_DIR, "firestore_ss.png")]
 
     # Send the email
     await send_invitation_email(
-        recipients, template_name, context, attachments
+        invite_request.recipients, template_name, context, attachments
     )
     return {"detail": "Invitation email sent successfully"}
